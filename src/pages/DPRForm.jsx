@@ -175,22 +175,35 @@ export default function DPRForm() {
           {/* 01 Project */}
           <div style={sectionStyle}>
             <SectionTag num="01" label="Project" />
-            <label style={labelStyle}>Select Project *</label>
-            <CustomSelect name="projectId" value={form.projectId} onChange={handleChange}
-              options={projectOptions} placeholder="— Choose a project —" hasError={!!errors.projectId} dark={dark} />
-            {errors.projectId && <p style={{ color: '#f87171', fontSize: '0.73rem', marginTop: '5px' }}>{errors.projectId}</p>}
-            {selectedProject && (
-              <div style={{ marginTop: '12px', padding: '12px 14px', borderRadius: '10px', background: dark ? 'rgba(56,189,248,0.08)' : '#e0f2fe', border: `1px solid ${dark ? 'rgba(56,189,248,0.2)' : '#bae6fd'}` }}>
-                <p style={{ fontWeight: 700, color: accent, fontSize: '0.85rem', margin: '0 0 2px' }}>{selectedProject.name}</p>
-                <p style={{ color: dark ? '#64748b' : '#0369a1', fontSize: '0.75rem', margin: 0 }}>{selectedProject.location} · {selectedProject.manager}</p>
+            <label style={labelStyle}>Project *</label>
+
+            {projectId ? (
+              <div style={{ padding: '12px 14px', borderRadius: '10px', background: dark ? 'rgba(56,189,248,0.08)' : '#e0f2fe', border: `1.5px solid ${dark ? 'rgba(56,189,248,0.25)' : '#7dd3fc'}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div>
+                  <p style={{ fontWeight: 700, color: accent, fontSize: '0.95rem', margin: '0 0 2px', fontFamily: 'Barlow Condensed, sans-serif' }}>{selectedProject?.name}</p>
+                  <p style={{ color: dark ? '#64748b' : '#0369a1', fontSize: '0.75rem', margin: 0 }}>{selectedProject?.location} · {selectedProject?.manager}</p>
+                </div>
+                <span style={{ fontSize: '0.65rem', fontWeight: 700, padding: '3px 8px', borderRadius: '999px', background: dark ? 'rgba(56,189,248,0.15)' : '#bae6fd', color: accent, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Selected</span>
               </div>
+            ) : (
+              <>
+                <CustomSelect name="projectId" value={form.projectId} onChange={handleChange}
+                  options={projectOptions} placeholder="— Choose a project —" hasError={!!errors.projectId} dark={dark} />
+                {errors.projectId && <p style={{ color: '#f87171', fontSize: '0.73rem', marginTop: '5px' }}>{errors.projectId}</p>}
+                {selectedProject && (
+                  <div style={{ marginTop: '12px', padding: '12px 14px', borderRadius: '10px', background: dark ? 'rgba(56,189,248,0.08)' : '#e0f2fe', border: `1px solid ${dark ? 'rgba(56,189,248,0.2)' : '#bae6fd'}` }}>
+                    <p style={{ fontWeight: 700, color: accent, fontSize: '0.85rem', margin: '0 0 2px' }}>{selectedProject.name}</p>
+                    <p style={{ color: dark ? '#64748b' : '#0369a1', fontSize: '0.75rem', margin: 0 }}>{selectedProject.location} · {selectedProject.manager}</p>
+                  </div>
+                )}
+              </>
             )}
           </div>
 
           {/* 02 Site Conditions */}
           <div style={sectionStyle}>
             <SectionTag num="02" label="Site Conditions" />
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '14px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '14px' }}>
               <div>
                 <label style={labelStyle}>Date *</label>
                 <input type="date" name="date" value={form.date} onChange={handleChange} max={today}
