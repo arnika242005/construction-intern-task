@@ -6,7 +6,6 @@ import { validateLogin } from '../utils/validation';
 export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
-
   const [form, setForm] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({});
   const [authError, setAuthError] = useState('');
@@ -23,81 +22,135 @@ export default function Login() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const validationErrors = validateLogin(form);
-    if (Object.keys(validationErrors).length) {
-      setErrors(validationErrors);
-      return;
-    }
+    if (Object.keys(validationErrors).length) { setErrors(validationErrors); return; }
     setLoading(true);
     setTimeout(() => {
       const result = login(form.email, form.password);
       if (result.success) navigate('/projects');
       else { setAuthError(result.error); setLoading(false); }
-    }, 600);
+    }, 700);
   };
 
-  return (
-    <div className="min-h-screen bg-gray-950 flex flex-col items-center justify-center p-4">
-      {/* Background */}
-      <div className="absolute inset-0 opacity-5 pointer-events-none"
-        style={{ backgroundImage: 'repeating-linear-gradient(45deg, #f59e0b 0, #f59e0b 1px, transparent 0, transparent 50%)', backgroundSize: '20px 20px' }} />
+  const inputStyle = (hasError) => ({
+    background: '#fff',
+    border: `1.5px solid ${hasError ? '#f87171' : '#bae6fd'}`,
+    color: '#1e293b',
+    borderRadius: '10px',
+    padding: '12px 14px',
+    fontSize: '0.875rem',
+    width: '100%',
+    outline: 'none',
+    fontFamily: 'DM Sans, sans-serif',
+    boxShadow: hasError ? '0 0 0 3px rgba(248,113,113,0.12)' : 'none',
+    transition: 'border-color 0.2s, box-shadow 0.2s',
+  });
 
-      <div className="w-full max-w-sm relative">
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-amber-500 rounded-2xl mb-4 shadow-xl">
-            <span className="text-gray-900 font-black text-2xl">CF</span>
+  return (
+    <div style={{ minHeight: '100vh', display: 'flex', background: '#f0f7ff' }}>
+      {/* Left branding panel */}
+      <div style={{
+        display: 'none', width: '50%', flexDirection: 'column', justifyContent: 'space-between',
+        padding: '48px', position: 'relative', overflow: 'hidden',
+        background: 'linear-gradient(145deg, #0284c7 0%, #0369a1 100%)'
+      }} className="lg:flex">
+        {/* Grid texture */}
+        <div style={{
+          position: 'absolute', inset: 0, opacity: 0.1,
+          backgroundImage: 'linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)',
+          backgroundSize: '48px 48px'
+        }} />
+        {/* Glow */}
+        <div style={{
+          position: 'absolute', bottom: '-80px', right: '-80px', width: '400px', height: '400px',
+          borderRadius: '50%', opacity: 0.25, filter: 'blur(80px)',
+          background: 'radial-gradient(circle, #7dd3fc, transparent)'
+        }} />
+
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '64px' }}>
+            <div style={{ width: 40, height: 40, borderRadius: 12, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.8rem', color: '#0284c7', fontFamily: 'Barlow Condensed, sans-serif' }}>CF</div>
+            <span style={{ fontFamily: 'Barlow Condensed, sans-serif', color: '#fff', fontSize: '1rem', letterSpacing: '0.12em', fontWeight: 700 }}>CONSTRUCTFIELD</span>
           </div>
-          <h1 className="text-white text-2xl font-bold tracking-tight">ConstructField</h1>
-          <p className="text-gray-400 text-sm mt-1">Field Management Platform</p>
+          <h1 style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '3.8rem', fontWeight: 800, lineHeight: 1.02, color: '#fff', margin: 0 }}>
+            FIELD<br />
+            <span style={{ color: '#bae6fd' }}>MANAGEMENT</span><br />
+            PLATFORM
+          </h1>
+          <p style={{ marginTop: '20px', color: 'rgba(255,255,255,0.7)', fontSize: '0.9rem', lineHeight: 1.75, maxWidth: '320px' }}>
+            Track daily progress, manage teams, and submit reports from any construction site — in real time.
+          </p>
         </div>
 
-        {/* Card */}
-        <div className="bg-gray-900 rounded-3xl p-6 shadow-2xl border border-gray-800">
-          <h2 className="text-white font-bold text-lg mb-5">Sign in to your account</h2>
+        <div style={{ position: 'relative', zIndex: 1, display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
+          {[['5+', 'Active Sites'], ['240+', 'Workers'], ['98%', 'Report Rate']].map(([n, l]) => (
+            <div key={l} style={{ borderRadius: 12, padding: '16px', background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)' }}>
+              <p style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '1.8rem', fontWeight: 800, color: '#fff', margin: 0 }}>{n}</p>
+              <p style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.08em', margin: '2px 0 0' }}>{l}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Right form panel */}
+      <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }} className="lg:w-1/2">
+        <div style={{ width: '100%', maxWidth: '380px' }} className="animate-fade-up">
+
+          {/* Mobile logo */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '40px' }} className="lg:hidden">
+            <div style={{ width: 38, height: 38, borderRadius: 10, background: '#0ea5e9', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.75rem', color: '#fff' }}>CF</div>
+            <span style={{ fontFamily: 'Barlow Condensed, sans-serif', color: '#0284c7', fontSize: '1rem', letterSpacing: '0.12em', fontWeight: 700 }}>CONSTRUCTFIELD</span>
+          </div>
+
+          <h2 style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '2.2rem', fontWeight: 800, color: '#0c4a6e', margin: '0 0 4px' }}>Welcome back</h2>
+          <p style={{ color: '#64748b', fontSize: '0.875rem', marginBottom: '28px' }}>Sign in to access your dashboard</p>
 
           {authError && (
-            <div className="mb-4 bg-red-950 border border-red-800 text-red-300 text-sm px-4 py-3 rounded-xl">
-              {authError}
+            <div style={{ marginBottom: '20px', padding: '12px 16px', borderRadius: '10px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '8px', background: '#fef2f2', border: '1px solid #fecaca', color: '#dc2626' }}>
+              ⚠ {authError}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} noValidate className="space-y-4">
+          <form onSubmit={handleSubmit} noValidate style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div>
-              <label className="block text-gray-300 text-sm font-medium mb-1.5">Email address</label>
-              <input
-                type="email" name="email" value={form.email} onChange={handleChange}
-                placeholder="test@test.com"
-                className={`w-full bg-gray-800 border rounded-xl px-4 py-3 text-white text-sm placeholder-gray-600 outline-none focus:ring-2 transition
-                  ${errors.email ? 'border-red-500 focus:ring-red-500/30' : 'border-gray-700 focus:ring-amber-500/30 focus:border-amber-500'}`}
+              <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px' }}>Email Address</label>
+              <input type="email" name="email" value={form.email} onChange={handleChange} placeholder="test@test.com" style={inputStyle(errors.email)}
+                onFocus={e => { e.target.style.borderColor = '#0ea5e9'; e.target.style.boxShadow = '0 0 0 3px rgba(14,165,233,0.15)'; }}
+                onBlur={e => { if (!errors.email) { e.target.style.borderColor = '#bae6fd'; e.target.style.boxShadow = 'none'; }}}
               />
-              {errors.email && <p className="text-red-400 text-xs mt-1.5">{errors.email}</p>}
+              {errors.email && <p style={{ color: '#dc2626', fontSize: '0.73rem', marginTop: '5px' }}>{errors.email}</p>}
             </div>
 
             <div>
-              <label className="block text-gray-300 text-sm font-medium mb-1.5">Password</label>
-              <div className="relative">
-                <input
-                  type={showPass ? 'text' : 'password'} name="password" value={form.password} onChange={handleChange}
-                  placeholder="123456"
-                  className={`w-full bg-gray-800 border rounded-xl px-4 py-3 pr-11 text-white text-sm placeholder-gray-600 outline-none focus:ring-2 transition
-                    ${errors.password ? 'border-red-500 focus:ring-red-500/30' : 'border-gray-700 focus:ring-amber-500/30 focus:border-amber-500'}`}
+              <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px' }}>Password</label>
+              <div style={{ position: 'relative' }}>
+                <input type={showPass ? 'text' : 'password'} name="password" value={form.password} onChange={handleChange} placeholder="••••••"
+                  style={{ ...inputStyle(errors.password), paddingRight: '52px' }}
+                  onFocus={e => { e.target.style.borderColor = '#0ea5e9'; e.target.style.boxShadow = '0 0 0 3px rgba(14,165,233,0.15)'; }}
+                  onBlur={e => { if (!errors.password) { e.target.style.borderColor = '#bae6fd'; e.target.style.boxShadow = 'none'; }}}
                 />
                 <button type="button" onClick={() => setShowPass(!showPass)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 text-xs">
+                  style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.08em' }}>
                   {showPass ? 'HIDE' : 'SHOW'}
                 </button>
               </div>
-              {errors.password && <p className="text-red-400 text-xs mt-1.5">{errors.password}</p>}
+              {errors.password && <p style={{ color: '#dc2626', fontSize: '0.73rem', marginTop: '5px' }}>{errors.password}</p>}
             </div>
 
-            <button type="submit" disabled={loading}
-              className="w-full bg-amber-500 hover:bg-amber-400 disabled:opacity-60 text-gray-900
-                font-bold py-3 rounded-xl transition-all text-sm mt-2 flex items-center justify-center gap-2">
+            <button type="submit" disabled={loading} className="btn-primary" style={{ marginTop: '4px' }}>
               {loading ? (
-                <><span className="w-4 h-4 border-2 border-gray-900/40 border-t-gray-900 rounded-full animate-spin" /> Signing in…</>
-              ) : 'Sign In'}
+                <>
+                  <span style={{ width: 15, height: 15, border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', display: 'inline-block' }} className="animate-spin" />
+                  Signing in…
+                </>
+              ) : 'Sign In →'}
             </button>
           </form>
+
+          <div style={{ marginTop: '20px', padding: '12px 16px', borderRadius: '10px', textAlign: 'center', background: '#e0f2fe', border: '1px solid #bae6fd' }}>
+            <p style={{ fontSize: '0.75rem', color: '#0369a1', margin: 0 }}>
+              Demo: <span style={{ fontWeight: 700 }}>test@test.com</span> / <span style={{ fontWeight: 700 }}>123456</span>
+            </p>
+          </div>
         </div>
       </div>
     </div>
